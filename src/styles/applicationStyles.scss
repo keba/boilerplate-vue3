@@ -1,0 +1,75 @@
+.alert {
+  margin: 0 7px;
+}
+
+.alert-popups {
+  position: sticky;
+  top: 64px;
+  z-index: 1000;
+}
+
+.append-button {
+  margin-left: 0 !important;
+  margin-right: 10px !important;
+}
+
+.flex-container-center {
+  justify-content: center;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 2px;
+}
+
+.flex-container-right {
+  justify-content: end;
+  display: flex;
+  flex-flow: row wrap;
+  margin: 2px;
+}
+
+.footer-border {
+  border-top: 1px solid #000000;
+}
+
+hr {
+  display: block;
+  margin: 3px auto;
+  border-style: inset;
+  border-width: 0;
+  border-top: 0.1px solid teal;
+}
+
+.sheet-left {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.v-btn {
+  margin: 7px 3px;
+}
+
+.v-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-flow: row wrap;
+  gap: 5px;
+}
+
+.v-data-table {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.v-form {
+  margin: 0;
+  padding: 0;
+}
+
+.v-sheet {
+  margin-right: 30px;
+}
+
+.v-text-field__suffix {
+  font-size: 0.85em;
+}

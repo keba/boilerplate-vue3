@@ -1,0 +1,28 @@
+* text=auto eol=lf
+
+*.css text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.j2 text eol=lf
+*.less text eol=lf
+*.md text eol=lf
+*.cjs text eol=lf
+*.mjs text eol=lf
+*.opts text eol=lf
+*.py text eol=lf
+*.pyc text eol=lf
+*.sh text eol=lf
+*.sql text eol=lf
+*.tf text eol=lf
+*.tfvars text eol=lf
+*.tstate text eol=lf
+*.tstate.backup text eol=lf
+*.txt text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+
+*.gif binary
+*.jpg binary
+*.png binary
+*.zip binary

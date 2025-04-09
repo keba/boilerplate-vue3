@@ -1,0 +1,144 @@
+version: 2.1
+
+executors:
+  make-your-own-executor:
+    docker:
+      - image: amazonlinux:2023
+    working_directory: ~/project
+
+  playwright-executor:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.51.1-noble
+    working_directory: ~/project
+
+commands:
+  output_versions:
+    steps:
+      - run:
+          name: output versions
+          command: |
+            set +e
+            set +o pipefail
+            echo node:
+            node --version
+            echo
+            echo npm:
+            npm --version
+            echo
+            echo yarn:
+            yarn --version
+            echo
+            echo aws:
+            aws --version
+            echo
+            echo postgres:
+            postgres --version
+            echo
+            echo docker:
+            docker --version
+            echo
+            echo jq
+            jq --version
+            echo
+            echo python3
+            python3 --version
+            echo
+            echo gzip
+            gzip --version
+            echo
+            echo tar
+            tar --version
+            echo
+            echo unzip
+            unzip --version
+            echo
+            echo zip
+            zip --version
+            exit 0
+
+jobs:
+  test:
+    executor: playwright-executor
+    steps:
+      - checkout
+      - output_versions
+      - restore_cache:
+          keys:
+            - website-{{ .Branch }}-test-{{ .BuildNum }}
+            - website-{{ .Branch }}-test-
+            - website-
+      - run:
+          name: npm install using ci
+          command: npm ci
+      - run:
+          name: output package-lock.json
+          command: cat package-lock.json
+      - run:
+          name: make test-reports dir
+          command: mkdir -p ~/project/test-reports
+      - run:
+          name: eslint validation source
+          command: |
+            mkdir -p ~/project/test-reports/eslint
+            ~/project/node_modules/eslint/bin/eslint.js -c eslint.config.mjs src/** *.mjs --format junit --output-file ~/project/test-reports/eslint/eslint-src.xml
+      - run:
+          name: build testing for vite preview
+          command: npm run build-tests
+      - run:
+          name: install playwright default browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: run playwright tests
+          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;npx playwright test
+      - store_test_results:
+          path: ~/project/test-reports/junit/results.xml
+      - store_artifacts:
+          path: ~/project/test-reports
+      - save_cache:
+          key: website-{{ .Branch }}-test-{{ .BuildNum }}
+          paths:
+            - ~/project/test-reports/screenshots
+          when: always
+
+  deploy:
+    executor: make-your-own-executor
+    steps:
+      - checkout
+      - output_versions
+      - run:
+          name: write commands to publish files to s3 and invalidate the cloudfront cache.
+          command: echo this is complicated. There are multiple steps needed. a good DevOps person can help.
+      - run:
+          name: set deploy info
+          command: circleci run release log --environment-name=website --component-name={{ .Branch }} --target-version={{ .BuildNum }}
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - development
+
+  deploy:
+    jobs:
+      - test:
+          filters:
+            branches:
+              only:
+                - staging
+                - hotfix
+                - production
+      - deploy:
+          context:
+            - aws-access
+          filters:
+            branches:
+              only:
+                - staging
+                - hotfix
+                - production
+          requires:
+            - test

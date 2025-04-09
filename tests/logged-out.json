@@ -1,0 +1,27 @@
+{
+  "cookies": [
+    {
+      "name": "menuShowPermanent",
+      "value": "false",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 2524608000,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "themeMode",
+      "value": "dark",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 2524608000,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:4173",
+      "localStorage": [],
+      "sessionStorage": []
+    }
+  ]
+}

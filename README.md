@@ -1,6 +1,8 @@
 # boilerplate-vue3
 Vue 3 with Vuetify 3, Pinia, AJV, Axios. Playwright for tests. Wrapped in Vite.
 
+CircleCI tests: [![CircleCI](https://dl.circleci.com/status-badge/img/gh/keba/boilerplate-vue3/tree/development.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/keba/boilerplate-vue3/tree/development)
+
 This project is a cut-down version of a website I have created, so a lot of the major functionality is alluded to in comments, or just not there as
 part of being cut to give this boilerplate.
 

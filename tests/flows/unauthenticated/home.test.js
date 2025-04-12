@@ -37,10 +37,11 @@ test.describe(testName, () => {
     await page.goto(defaultPage);
     await testButton(page, isDesktop, true, false, 'topBarMenu', '', 'Show Menu');
     await testButton(page, isDesktop, true, false, 'topBarTheme', '', 'Change to Light Theme');
-    await testButton(page, isDesktop, true, false, 'topBarAbout', 'About', '');
+    const about = await testButton(page, isDesktop, true, false, 'topBarAbout', 'About', '');
     await testButton(page, isDesktop, false, false, 'topBarHome', 'Home', '');
     await checkTitle(page, 'Home');
     await alertsEmpty(page);
+    await about.hover();
     await checkScreenshot(page, `${testName} ${test.info().title}`, true, undefined);
   });
 
@@ -50,6 +51,8 @@ test.describe(testName, () => {
     await themeButton.click();
     await testButton(page, isDesktop, true, false, 'topBarTheme', '', 'Change to Dark Theme');
     await alertsEmpty(page);
+    const about = await testButton(page, isDesktop, true, false, 'topBarAbout', 'About', '');
+    await about.hover();
     await checkScreenshot(page, `${testName} ${test.info().title}`, true, undefined);
     await themeButton.click();
   });

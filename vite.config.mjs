@@ -17,7 +17,9 @@ export default defineConfig(({mode}) => {
     vuetify({
       autoImport: true
     }),
-    components()
+    components({
+      dts: false
+    })
   ];
   // noinspection JSUnusedGlobalSymbols
   return {

@@ -1,7 +1,7 @@
 import eslintJs from '@eslint/js';
 import globals from 'globals';
 import pluginVue from 'eslint-plugin-vue';
-import stylisticJs from '@stylistic/eslint-plugin-js';
+import stylistic from '@stylistic/eslint-plugin';
 
 // noinspection JSUnusedGlobalSymbols
 export default [
@@ -26,7 +26,7 @@ export default [
       reportUnusedInlineConfigs: 'error'
     },
     plugins: {
-      '@stylistic': stylisticJs,
+      '@stylistic': stylistic,
       vue: pluginVue
     },
     rules: {

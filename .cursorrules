@@ -1,0 +1,44 @@
+# Cursor AI Development Workflow Rules
+
+## Test Command Rules
+
+### When to use `npm run tests-start`:
+- Regular test runs
+- Quick validation that existing functionality works
+- Daily development testing
+
+### When to use `npm run tests-start-with-build`:
+- After package updates have been installed (`npm i`)
+- When tests haven't been run in a while
+- **Any time updates have happened to the website code**
+- When you want to ensure the entire build and test pipeline works
+
+## Package Update Rules
+
+When running "check outdated":
+1. Run `npm run check-outdated`
+2. Update package.json with any updates found
+3. Run `npm i` to install updated packages
+
+## CircleCI Playwright Docker Image Rules
+
+When Playwright version is updated in package.json:
+1. Check the current Playwright version in package.json (e.g., `"@playwright/test": "1.55.0"`)
+2. Update the CircleCI Docker image in `.circleci/config.yml` to match:
+   - Find the `playwright-executor` section
+   - Update the image from `mcr.microsoft.com/playwright:v1.54.1-noble` to `mcr.microsoft.com/playwright:v1.55.0-noble`
+   - Use the same version number as in package.json (e.g., `v1.55.0`)
+   - Keep the same base image tag (`-noble` for Ubuntu 24.04 LTS)
+3. This ensures the CI environment uses the same Playwright version as the local development environment
+
+## Rationale
+
+- **`tests-start-with-build`** is more thorough because it includes building the test version before running tests
+- This catches any build-time issues that might not be apparent in just runtime tests
+- After code changes or package updates, the build process needs to be validated
+- It ensures the entire development pipeline works correctly after any changes
+
+## Summary
+
+**Rule of thumb**: Any code changes, package updates, or when tests haven't been run recently = use `tests-start-with-build`
+

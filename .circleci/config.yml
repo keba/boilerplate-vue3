@@ -60,7 +60,8 @@ jobs:
   test:
     executor: playwright-executor
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - output_versions
       - restore_cache:
           keys:
@@ -103,7 +104,8 @@ jobs:
   deploy:
     executor: make-your-own-executor
     steps:
-      - checkout
+      - checkout:
+          method: blobless
       - output_versions
       - run:
           name: write commands to publish files to s3 and invalidate the cloudfront cache.

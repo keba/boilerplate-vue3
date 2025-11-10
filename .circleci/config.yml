@@ -138,7 +138,7 @@ jobs:
 #          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;pnpm exec playwright test
       - run:
           name: build testing for vite preview
-          command: npm run build-tests
+          command: npm run build-tests-ci
       - run:
           name: install playwright default browsers
           command: npm exec playwright install --with-deps

@@ -54,6 +54,7 @@
     "build-remove-old-files": "(rm -rf dist)&&(sync)&&(sleep 0.5)",
     "build-staging": "(npm run eslint)&&(npm run build-remove-old-files)&&(vite build --mode staging)",
     "build-tests": "(npm run eslint)&&(npm run build-remove-old-files)&&(vite build --mode test)",
+    "build-tests-ci": "(npm run build-remove-old-files)&&(vite build --mode test)",
     "check-circleci": "circleci config validate",
     "check-outdated": "npm outdated || true",
     "dev": "vite",

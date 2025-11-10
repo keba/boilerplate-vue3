@@ -8,7 +8,7 @@ executors:
 
   playwright-executor:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.55.1-noble
+      - image: mcr.microsoft.com/playwright:v1.56.1-noble
     working_directory: ~/project
 
 commands:
@@ -22,8 +22,8 @@ commands:
             echo node:
             node --version
             echo
-            echo npm:
-            npm --version
+            echo pnpm:
+            pnpm --version
             echo
             echo yarn:
             yarn --version
@@ -69,11 +69,14 @@ jobs:
             - website-{{ .Branch }}-test-
             - website-
       - run:
-          name: npm install using ci
-          command: npm ci
+          name: install pnpm
+          command: wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
       - run:
-          name: output package-lock.json
-          command: cat package-lock.json
+          name: pnpm install using lockfile
+          command: pnpm install --frozen-lockfile
+      - run:
+          name: output pnpm-lock.yaml
+          command: cat pnpm-lock.yaml
       - run:
           name: make test-reports dir
           command: mkdir -p ~/project/test-reports
@@ -84,13 +87,13 @@ jobs:
             ~/project/node_modules/eslint/bin/eslint.js -c eslint.config.mjs src/** *.mjs --format junit --output-file ~/project/test-reports/eslint/eslint-src.xml
       - run:
           name: build testing for vite preview
-          command: npm run build-tests
+          command: pnpm run build-tests
       - run:
           name: install playwright default browsers
-          command: npx playwright install --with-deps
+          command: pnpm exec playwright install --with-deps
       - run:
           name: run playwright tests
-          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;npx playwright test
+          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;pnpm exec playwright test
       - store_test_results:
           path: ~/project/test-reports/junit/results.xml
       - store_artifacts:

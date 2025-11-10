@@ -13,12 +13,12 @@ You may not like some of the approaches. I don't use typescript, I use ESM. I us
 appropriate. The eslint rules are something I like, and lots of people may have issues with. It's easy enough to just not use eslint when you are
 looking at the code.
 
-## Common pnpm commands
-Usually, I use `pnpm run dev-checked` and a browser pointed at http://localhost:5173 to see the app while I'm working on it.
+## Common npm commands
+Usually, I use `npm run dev-checked` and a browser pointed at http://localhost:5173 to see the app while I'm working on it.
 
-To test, I use `pnpm run tests-start-with-build` (or `pnpm run tests-start` if there have been no website changes since the last test run).
+To test, I use `npm run tests-start-with-build` (or `npm run tests-start` if there have been no website changes since the last test run).
 
-If I can't spend the time updating the node modules (major or breaking version change) then I switch to using `pnpm run dev`
+`npm run dev-checked` checks for any outdated node modules, and warns if it finds some (but doesn't stop it from running with the current versions). 
 
 There are a bunch of other commands that can be used, and they should be self-explanatory.
 

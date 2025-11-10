@@ -2,13 +2,13 @@
 
 ## Test Command Rules
 
-### When to use `pnpm run tests-start`:
+### When to use `npm run tests-start`:
 - Regular test runs
 - Quick validation that existing functionality works
 - Daily development testing
 
-### When to use `pnpm run tests-start-with-build`:
-- After package updates have been installed (`pnpm i`)
+### When to use `npm run tests-start-with-build`:
+- After package updates have been installed (`npm i`)
 - When tests haven't been run in a while
 - **Any time updates have happened to the website code**
 - When you want to ensure the entire build and test pipeline works
@@ -16,9 +16,9 @@
 ## Package Update Rules
 
 When running "check outdated":
-1. Run `pnpm run check-outdated`
+1. Run `npm run check-outdated`
 2. Update package.json with any updates found
-3. Run `pnpm i` to install updated packages
+3. Run `npm i` to install updated packages
 
 ## CircleCI Playwright Docker Image Rules
 

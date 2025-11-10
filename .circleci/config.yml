@@ -22,6 +22,9 @@ commands:
             echo node:
             node --version
             echo
+            echo npm:
+            npm --version
+            echo
             echo pnpm:
             pnpm --version
             echo
@@ -68,18 +71,24 @@ jobs:
             - website-{{ .Branch }}-test-{{ .BuildNum }}
             - website-{{ .Branch }}-test-
             - website-
+#      - run:
+#          name: install pnpm
+#          command: wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+#      - run:
+#          name: load pnpm path
+#          command: source /root/.bashrc
+#      - run:
+#          name: pnpm install using lockfile
+#          command: pnpm install --frozen-lockfile
       - run:
-          name: install pnpm
-          command: wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+          name: npm install using ci
+          command: npm ci
+#      - run:
+#          name: output pnpm-lock.yaml
+#          command: cat pnpm-lock.yaml
       - run:
-          name: load pnpm path
-          command: source /root/.bashrc
-      - run:
-          name: pnpm install using lockfile
-          command: pnpm install --frozen-lockfile
-      - run:
-          name: output pnpm-lock.yaml
-          command: cat pnpm-lock.yaml
+          name: output package-lock.json
+          command: cat package-lock.json
       - run:
           name: make test-reports dir
           command: mkdir -p ~/project/test-reports
@@ -88,15 +97,24 @@ jobs:
           command: |
             mkdir -p ~/project/test-reports/eslint
             ~/project/node_modules/eslint/bin/eslint.js -c eslint.config.mjs src/** *.mjs --format junit --output-file ~/project/test-reports/eslint/eslint-src.xml
+#      - run:
+#          name: build testing for vite preview
+#          command: pnpm run build-tests
+#      - run:
+#          name: install playwright default browsers
+#          command: pnpm exec playwright install --with-deps
+#      - run:
+#          name: run playwright tests
+#          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;pnpm exec playwright test
       - run:
           name: build testing for vite preview
-          command: pnpm run build-tests
+          command: npm run build-tests
       - run:
           name: install playwright default browsers
-          command: pnpm exec playwright install --with-deps
+          command: npm exec playwright install --with-deps
       - run:
           name: run playwright tests
-          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;pnpm exec playwright test
+          command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;npm exec playwright test
       - store_test_results:
           path: ~/project/test-reports/junit/results.xml
       - store_artifacts:

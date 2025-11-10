@@ -56,7 +56,7 @@ export default defineConfig({
     video: 'on-first-retry'
   },
   webServer: {
-    command: 'pnpm run preview',
+    command: 'npm run preview',
     ignoreHTTPSErrors: false,
     reuseExistingServer: false,
     timeout: 60000,

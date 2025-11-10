@@ -39,7 +39,7 @@ commands:
             nvm use $NODE_VERSION
             nvm alias default $NODE_VERSION
             nvm cache clear
-            echo 'export PATH="$NVM_DIR/versions/node/v24.11.0/bin:$PATH"' >> $BASH_ENV
+            echo "export PATH=\"$NVM_DIR/versions/node/v$NODE_VERSION/bin:\$PATH\"" >> $BASH_ENV
 
   output_versions:
     steps:

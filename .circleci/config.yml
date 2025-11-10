@@ -15,6 +15,13 @@ commands:
   install_node_24:
     steps:
       - run:
+          name: install missing dependencies
+          command: |
+            apt-get update
+            apt-get install -y --no-install-recommends curl jq
+            apt-get clean
+            rm -rf /var/lib/apt/lists/*
+      - run:
           name: get nvm version
           command: |
             curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r .tag_name > /latest_nvm_version.txt
@@ -25,7 +32,9 @@ commands:
       - run:
           name: install node 24
           command: |
-            EXPORT NODE_VERSION=24.11.0
+            export NODE_VERSION=24.11.0
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             nvm install $NODE_VERSION
             nvm use $NODE_VERSION
             nvm alias default $NODE_VERSION

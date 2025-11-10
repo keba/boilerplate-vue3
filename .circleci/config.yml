@@ -12,6 +12,25 @@ executors:
     working_directory: ~/project
 
 commands:
+  install_node_24:
+    steps:
+      - run:
+          name: get nvm version
+          command: |
+            curl -s https://api.github.com/repos/nvm-sh/nvm/releases/latest | jq -r .tag_name > /latest_nvm_version.txt
+      - run:
+          name: install nvm
+          command: |
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$(cat /latest_nvm_version.txt)/install.sh | bash
+      - run:
+          name: install node 24
+          command: |
+            EXPORT NODE_VERSION=24.11.0
+            nvm install $NODE_VERSION
+            nvm use $NODE_VERSION
+            nvm alias default $NODE_VERSION
+            nvm cache clear
+
   output_versions:
     steps:
       - run:
@@ -65,6 +84,7 @@ jobs:
     steps:
       - checkout:
           method: blobless
+      - install_node_24
       - output_versions
       - restore_cache:
           keys:

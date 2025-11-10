@@ -72,6 +72,9 @@ jobs:
           name: install pnpm
           command: wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
       - run:
+          name: load pnpm path
+          command: source /root/.bashrc
+      - run:
           name: pnpm install using lockfile
           command: pnpm install --frozen-lockfile
       - run:

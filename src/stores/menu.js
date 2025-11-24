@@ -22,8 +22,12 @@ export const useMenuStore = defineStore('menu', () => {
   const showMenu = ref(initialWebsiteConfigMenuShowPermanent);
   const showMenuPermanent = ref(initialWebsiteConfigMenuShowPermanent);
 
-  const setShowMenu = () => {
-    showMenu.value = !showMenu.value;
+  const setShowMenu = (value) => {
+    if (value === undefined) {
+      showMenu.value = !showMenu.value;
+    } else {
+      showMenu.value = value;
+    }
   };
 
   const setShowMenuPermanent = () => {

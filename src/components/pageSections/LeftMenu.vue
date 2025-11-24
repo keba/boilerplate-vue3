@@ -79,6 +79,10 @@ watch(() => [menu.showMenu], ([newValue]) => {
   showMenu.value = newValue;
 });
 
+watch(() => [showMenu.value], ([newValue]) => {
+  menu.setShowMenu(newValue);
+});
+
 watch(() => [menu.showMenuPermanent], ([newValue]) => {
   showMenuPermanent.value = newValue;
 });

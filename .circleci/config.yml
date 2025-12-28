@@ -94,7 +94,7 @@ jobs:
           command: npm run build-tests-ci
       - run:
           name: install playwright default browsers
-          command: npm exec playwright install --with-deps
+          command: npm exec playwright install -- --with-deps
       - run:
           name: run playwright tests
           command: export CHECK_SCREENSHOTS=TRUE;export CIRCLE_CI=TRUE;npm exec playwright test

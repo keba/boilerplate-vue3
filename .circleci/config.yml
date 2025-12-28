@@ -41,21 +41,20 @@ commands:
   output_versions:
     steps:
       - run:
-          name: output versions
+          name: Output tool versions
           command: |
             set +e
             set +o pipefail
-      - run:
-          name: Output tool versions
-          command: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
             echo "aws: $(command -v aws >/dev/null 2>&1 && aws --version 2>&1 | head -n1 || echo 'not found')"
             echo "docker: $(command -v docker >/dev/null 2>&1 && docker --version | head -n1 || echo 'not found')"
             echo "gzip: $(command -v gzip >/dev/null 2>&1 && gzip --version | head -n1 | awk '{print $2}' || echo 'not found')"
             echo "jq: $(command -v jq >/dev/null 2>&1 && jq --version || echo 'not found')"
             echo "node: $(command -v node >/dev/null 2>&1 && node --version || echo 'not found')"
             echo "npm: $(command -v npm >/dev/null 2>&1 && npm --version || echo 'not found')"
-            echo "nvm: $(command -v nvm >/dev/null 2>&1 && nvm --version || echo 'not found')"
-            echo "playwright: $(command -v playwright >/dev/null 2>&1 && playwright --version || echo 'not found')"
+            if type nvm >/dev/null 2>&1; then echo "nvm: $(nvm --version 2>/dev/null || echo 'not found')"; else echo "nvm: not found"; fi
+            if command -v playwright >/dev/null 2>&1; then echo "playwright: $(playwright --version 2>/dev/null | head -n1 || echo 'not found')"; elif command -v npx >/dev/null 2>&1 && [ -f "package.json" ]; then echo "playwright: $(npx playwright --version 2>/dev/null | head -n1 || echo 'not found')"; else echo "playwright: not found"; fi
             echo "postgres: $(command -v postgres >/dev/null 2>&1 && postgres --version 2>&1 | head -n1 || echo 'not found')"
             echo "pnpm: $(command -v pnpm >/dev/null 2>&1 && pnpm --version || echo 'not found')"
             echo "python3: $(command -v python3 >/dev/null 2>&1 && python3 --version || echo 'not found')"

@@ -2,6 +2,7 @@
 .git/
 .idea/
 .run/
+.vscode/
 dist/
 test-reports/
 node_modules/

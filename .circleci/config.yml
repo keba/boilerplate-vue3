@@ -27,7 +27,7 @@ commands:
             export NVM_VERSION="$(jq -r .engines.nvm package.json)"
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$NVM_VERSION/install.sh | bash
       - run:
-          name: install node 24
+          name: install node
           command: |
             export NODE_VERSION="$(jq -r .engines.node package.json)"
             export NVM_DIR="$HOME/.nvm"
@@ -45,22 +45,24 @@ commands:
           command: |
             set +e
             set +o pipefail
-            echo "aws: $(aws --version 2>/dev/null | head -n1 || echo 'not found')"
-            echo "docker: $(docker --version 2>/dev/null | head -n1 || echo 'not found')"
-            echo "gzip: $(gzip --version 2>/dev/null | head -n1 | awk '{print $2}' || echo 'not found')"
-            echo "jq: $(jq --version 2>/dev/null || echo 'not found')"
-            echo "node: $(node --version 2>/dev/null || echo 'not found')"
-            echo "npm: $(npm --version 2>/dev/null || echo 'not found')"
-            echo "nvm: $(nvm --version 2>/dev/null || echo 'not found')"
-            echo "playwright: $(playwright --version 2>/dev/null || echo 'not found')"
-            echo "postgres: $(postgres --version 2>/dev/null | head -n1 || echo 'not found')"
-            echo "pnpm: $(pnpm --version 2>/dev/null || echo 'not installed')"
-            echo "python3: $(python3 --version 2>/dev/null || echo 'not found')"
-            echo "tar: $(tar --version 2>/dev/null | head -n1 | awk '{print $(NF)}' || echo 'not found')"
-            echo "unzip: $(unzip -v 2>/dev/null | head -n1 | awk '{print $2}' || echo 'not found')"
-            echo "yarn: $(yarn --version 2>/dev/null || echo 'not installed')"
-            echo "zip: $(zip -v 2>&1 | grep 'This is Zip' | awk '{print $4}' || echo 'not found')"
-            exit 0
+      - run:
+          name: Output tool versions
+          command: |
+            echo "aws: $(command -v aws >/dev/null 2>&1 && aws --version 2>&1 | head -n1 || echo 'not found')"
+            echo "docker: $(command -v docker >/dev/null 2>&1 && docker --version | head -n1 || echo 'not found')"
+            echo "gzip: $(command -v gzip >/dev/null 2>&1 && gzip --version | head -n1 | awk '{print $2}' || echo 'not found')"
+            echo "jq: $(command -v jq >/dev/null 2>&1 && jq --version || echo 'not found')"
+            echo "node: $(command -v node >/dev/null 2>&1 && node --version || echo 'not found')"
+            echo "npm: $(command -v npm >/dev/null 2>&1 && npm --version || echo 'not found')"
+            echo "nvm: $(command -v nvm >/dev/null 2>&1 && nvm --version || echo 'not found')"
+            echo "playwright: $(command -v playwright >/dev/null 2>&1 && playwright --version || echo 'not found')"
+            echo "postgres: $(command -v postgres >/dev/null 2>&1 && postgres --version 2>&1 | head -n1 || echo 'not found')"
+            echo "pnpm: $(command -v pnpm >/dev/null 2>&1 && pnpm --version || echo 'not found')"
+            echo "python3: $(command -v python3 >/dev/null 2>&1 && python3 --version || echo 'not found')"
+            echo "tar: $(command -v tar >/dev/null 2>&1 && tar --version | head -n1 | awk '{print $(NF)}' || echo 'not found')"
+            echo "unzip: $(command -v unzip >/dev/null 2>&1 && unzip -v | head -n1 | awk '{print $2}' || echo 'not found')"
+            echo "yarn: $(command -v yarn >/dev/null 2>&1 && yarn --version || echo 'not found')"
+            echo "zip: $(command -v zip >/dev/null 2>&1 && zip -v | grep 'This is Zip' | awk '{print $4}' || echo 'not found')"
 
 jobs:
   test:

@@ -190,21 +190,26 @@ export async function testTextField(page, visible, disabled, focused, id, type, 
   if (visible) {
     await expect(textField).toHaveValue(text);
     if (labelText.length > 0) {
-      const labelFirst = page.locator(`label[for="${id}"]`).first();
-      const labelLast = page.locator(`label[for="${id}"]`).last();
+      const labelsForId = page.locator(`label[for="${id}"]`);
+      const labelCount = await labelsForId.count();
+      const labelFirst = labelsForId.first();
+      const labelLast = labelsForId.last();
       await expect(labelFirst).toHaveText(labelText);
-      await expect(labelLast).toHaveText(labelText);
-      if (focused) {
-        await expect(labelFirst).toBeVisible();
-        await expect(labelLast).toBeHidden();
-      } else {
-        if (text.length > 0) {
+      if (labelCount >= 2) {
+        await expect(labelLast).toHaveText(labelText);
+        if (focused) {
+          await expect(labelFirst).toBeVisible();
+          await expect(labelLast).toBeHidden();
+        } else if (text.length > 0) {
           await expect(labelFirst).toBeVisible();
           await expect(labelLast).toBeHidden();
         } else {
           await expect(labelFirst).toBeHidden();
           await expect(labelLast).toBeVisible();
         }
+      } else {
+        // Vuetify 4 moves `for` between floating and main labels so only one matches at a time.
+        await expect(labelFirst).toBeVisible();
       }
     }
     const hint = page.locator(`id=${id}-messages`);

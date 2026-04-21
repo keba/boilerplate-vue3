@@ -9,7 +9,7 @@ part of being cut to give this boilerplate.
 The main intent of having this published is to show how a Vue3 project can be configured, and also provide an example on how you can test using 
 Playwright.
 
-You may not like some of the approaches. I don't use typescript, I use ESM. I use AJV to validate rules on allowed formats for strings where 
+You may not like some of the approaches. I don't use TypeScript, I use ESM. I use AJV to validate rules on allowed formats for strings where 
 appropriate. The eslint rules are something I like, and lots of people may have issues with. It's easy enough to just not use eslint when you are
 looking at the code.
 

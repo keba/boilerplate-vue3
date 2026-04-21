@@ -24,13 +24,13 @@
         @click="toggleTheme"
       >
         <v-icon
-          :color="theme.global.name.value === 'dark' ? 'accent' : 'slightlyVisible'"
-          :icon="theme.global.name.value === 'dark' ? icons.themeDark : icons.themeLight"
+          :color="isDarkTheme ? 'accent' : 'slightlyVisible'"
+          :icon="isDarkTheme ? icons.themeDark : icons.themeLight"
         />
         <v-tooltip
           activator="parent"
           location="bottom"
-          :text="theme.global.name.value === 'dark' ? 'Change to Light Theme' : 'Change to Dark Theme'"
+          :text="isDarkTheme ? 'Change to Light Theme' : 'Change to Dark Theme'"
         />
       </v-btn>
     </template>
@@ -88,7 +88,7 @@ import {useMenuStore} from '@/stores/menu.js';
 import {useProgressStore} from '@/stores/progress.js';
 import {useRoute} from 'vue-router';
 import {useTheme} from 'vuetify';
-import {ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 
 const application = useApplicationStore();
 const menu = useMenuStore();
@@ -96,19 +96,21 @@ const progress = useProgressStore();
 const route = useRoute();
 const showMenu = ref(menu.showMenu);
 const theme = useTheme();
+const isDarkTheme = computed(() => theme.name.value === 'dark');
 
 async function toggleTheme() {
-  theme.global.name.value = theme.global.name.value === 'dark' ? 'light' : 'dark';
-  await application.websiteConfigThemeUpdate(theme.global.name.value);
+  const next = theme.name.value === 'dark' ? 'light' : 'dark';
+  theme.change(next);
+  await application.websiteConfigThemeUpdate(next);
 }
 
 watch(() => [application.websiteConfigThemeMode], ([newValue]) => {
   if (['dark', 'light'].includes(newValue)) {
-    if (theme.global.name.value !== newValue) {
-      theme.global.name.value = newValue;
+    if (theme.name.value !== newValue) {
+      theme.change(newValue);
     }
   } else {
-    theme.global.name.value = 'dark';
+    theme.change('dark');
   }
 });
 

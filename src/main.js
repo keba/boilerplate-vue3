@@ -81,7 +81,7 @@ async function validateRoutes(routesObject) {
   }
 
   const progress = useProgressStore();
-  // things should be initialised by now
+  // things should be initialized by now
 
   router.beforeEach(async function (to, from) {
     const application = useApplicationStore();

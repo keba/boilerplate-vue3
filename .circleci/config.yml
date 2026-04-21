@@ -8,7 +8,7 @@ executors:
 
   playwright-executor:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.57.0-noble
+      - image: mcr.microsoft.com/playwright:v1.59.1-noble-amd64
     working_directory: ~/project
 
 commands:
@@ -47,21 +47,31 @@ commands:
             set +o pipefail
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            echo "aws: $(command -v aws >/dev/null 2>&1 && aws --version 2>&1 | head -n1 || echo 'not found')"
-            echo "docker: $(command -v docker >/dev/null 2>&1 && docker --version | head -n1 || echo 'not found')"
-            echo "gzip: $(command -v gzip >/dev/null 2>&1 && gzip --version | head -n1 | awk '{print $2}' || echo 'not found')"
-            echo "jq: $(command -v jq >/dev/null 2>&1 && jq --version || echo 'not found')"
-            echo "node: $(command -v node >/dev/null 2>&1 && node --version || echo 'not found')"
-            echo "npm: $(command -v npm >/dev/null 2>&1 && npm --version || echo 'not found')"
+            echo "aws: $(command -v aws >/dev/null 2>&1 && aws --version 2>&1 | head -n1 | sed 's/aws-cli\///' || echo 'not found')"
+            echo "docker: $(command -v docker >/dev/null 2>&1 && docker --version 2>&1 | head -n1 || echo 'not found')"
+            echo "gzip: $(command -v gzip >/dev/null 2>&1 && gzip --version 2>&1 | head -n1 | awk '{print $2}' || echo 'not found')"
+            echo "jq: $(command -v jq >/dev/null 2>&1 && jq --version 2>&1 || echo 'not found')"
+            echo "node: $(command -v node >/dev/null 2>&1 && node --version 2>&1 | sed 's/^v//' || echo 'not found')"
+            echo "npm: $(command -v npm >/dev/null 2>&1 && npm --version 2>&1 || echo 'not found')"
             if type nvm >/dev/null 2>&1; then echo "nvm: $(nvm --version 2>/dev/null || echo 'not found')"; else echo "nvm: not found"; fi
-            if command -v playwright >/dev/null 2>&1; then echo "playwright: $(playwright --version 2>/dev/null | head -n1 || echo 'not found')"; elif command -v npx >/dev/null 2>&1 && [ -f "package.json" ]; then echo "playwright: $(npx playwright --version 2>/dev/null | head -n1 || echo 'not found')"; else echo "playwright: not found"; fi
+            PLAYWRIGHT_VER=""
+            if command -v playwright >/dev/null 2>&1; then
+              PLAYWRIGHT_VER="$(playwright --version 2>/dev/null | sed -E 's/^Version[[:space:]]+//' | tr -d '\r\n' || echo '')"
+            elif [ -d "/ms-playwright" ] || [ -f "/usr/local/bin/update-playwright" ]; then
+              PLAYWRIGHT_VER="$(npx playwright --version 2>/dev/null | grep -E '^Version' | sed -E 's/^Version[[:space:]]+//' | tr -d '\r\n' || echo '')"
+            fi
+            if [ -n "$PLAYWRIGHT_VER" ]; then
+              echo "playwright: $PLAYWRIGHT_VER"
+            else
+              echo "playwright: not found"
+            fi
             echo "postgres: $(command -v postgres >/dev/null 2>&1 && postgres --version 2>&1 | head -n1 || echo 'not found')"
-            echo "pnpm: $(command -v pnpm >/dev/null 2>&1 && pnpm --version || echo 'not found')"
-            echo "python3: $(command -v python3 >/dev/null 2>&1 && python3 --version || echo 'not found')"
-            echo "tar: $(command -v tar >/dev/null 2>&1 && tar --version | head -n1 | awk '{print $(NF)}' || echo 'not found')"
-            echo "unzip: $(command -v unzip >/dev/null 2>&1 && unzip -v | head -n1 | awk '{print $2}' || echo 'not found')"
-            echo "yarn: $(command -v yarn >/dev/null 2>&1 && yarn --version || echo 'not found')"
-            echo "zip: $(command -v zip >/dev/null 2>&1 && zip -v | grep 'This is Zip' | awk '{print $4}' || echo 'not found')"
+            echo "pnpm: $(command -v pnpm >/dev/null 2>&1 && pnpm --version 2>&1 || echo 'not found')"
+            echo "python3: $(command -v python3 >/dev/null 2>&1 && python3 --version 2>&1 || echo 'not found')"
+            echo "tar: $(command -v tar >/dev/null 2>&1 && tar --version 2>&1 | head -n1 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -n1 || echo 'not found')"
+            echo "unzip: $(command -v unzip >/dev/null 2>&1 && unzip -v 2>&1 | head -n1 | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?' | head -n1 || echo 'not found')"
+            echo "yarn: $(command -v yarn >/dev/null 2>&1 && yarn --version 2>&1 || echo 'not found')"
+            echo "zip: $(command -v zip >/dev/null 2>&1 && zip -v 2>&1 | grep -oE 'Zip[[:space:]]+[0-9]+\.[0-9]+(\.[0-9]+)?' | awk '{print $2}' || echo 'not found')"
 
 jobs:
   test:
@@ -76,6 +86,15 @@ jobs:
             - website-{{ .Branch }}-test-{{ .BuildNum }}
             - website-{{ .Branch }}-test-
             - website-
+      - run:
+          name: clear screenshots
+          command: |
+            if git log -1 --pretty=%B | grep -q "\[ci !screenshots\]"; then
+              echo "Commit message contains [ci !screenshots], clearing screenshots..."
+              rm -rf ~/project/test-reports/screenshots
+            else
+              echo "Commit message does not contain [ci !screenshots], skipping screenshot clearing"
+            fi
       - run:
           name: npm install using ci
           command: npm ci --no-audit --no-fund
